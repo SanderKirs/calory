@@ -1,14 +1,15 @@
 const StorageCtrl = (function() {
     return {
-        getItemsFromStorage: function() {
+        getItemsFromStorage: function () {
             let items;
-            if(localStorage.getItem('items') === null) {
+            if (localStorage.getItem('items') === null) {
                 items = [];
             } else {
                 items = JSON.parse(localStorage.getItem('items'));
             }
             return items;
         }
+    }
 })();
 
 const ItemCtrl = (function() {
