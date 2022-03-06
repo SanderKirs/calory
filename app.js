@@ -1,11 +1,23 @@
-const StorageCtrl = (function() {
+const StorageCtrl = (function(){
     return {
-        getItemsFromStorage: function () {
+        storeItem: function(item){
             let items;
-            if (localStorage.getItem('items') === null) {
+            if(localStorage. getItem('items') === null){
                 items = [];
+                items.push(item);
+                localStorage.setItem('items', JSON.stringify(items));
             } else {
                 items = JSON.parse(localStorage.getItem('items'));
+                items.push(item);
+                localStorage.setItem('items', JSON.stringify(items));
+            }
+        },
+        getItemsFromStorage: function(){
+            let items;
+            if(localStorage.getItem('items') === null){
+                items = [];
+            } else {
+                item = JSON.parse(localStorage.getItem('items'));
             }
             return items;
         }
@@ -22,9 +34,10 @@ const ItemCtrl = (function() {
         items: [
             //{id: 0, name: 'Steak Dinner', calories: 1200},
             //{id: 1, name: 'Cookie', calories: 400},
-            //{id: 2, name: 'Eggs', calories: 300}
+            //{id: 2, name: 'Eggs', calories: 300},
         ],
-        total: 0
+        total: 0,
+        currentItem: null,
     }
     return {
         getItems: function(){
@@ -95,6 +108,10 @@ const UICtrl = (function (){
             </a>`;
                 document.querySelector(UISelectors.itemList). insertAdjacentElement('beforeend', li)
         },
+        updateListItem: function(item){
+            let listItems = document.querySelector(UISelectors.listItems);
+            listItems = Array.from(listItems);
+        },
         clearInput: function(){
             document.querySelector(UISelectors.itemNameInput).value = '';
             document.querySelector(UISelectors.itemCaloriesInput).value = '';
@@ -122,6 +139,10 @@ const App = (function(ItemCtrl,StorageCtrl, UICtrl){
             UICtrl.clearInput();
         }
         event.preventDefault()
+    }
+    const getItemsFromStorage = function(){
+        const items = StorageCtrl.getItemsFromStorage()
+        UICtrl.populateItemList(items)
     }
 
     return {
