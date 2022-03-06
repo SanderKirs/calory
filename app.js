@@ -1,3 +1,16 @@
+const StorageCtrl = (function() {
+    return {
+        getItemsFromStorage: function() {
+            let items;
+            if(localStorage.getItem('items') === null) {
+                items = [];
+            } else {
+                items = JSON.parse(localStorage.getItem('items'));
+            }
+            return items;
+        }
+})();
+
 const ItemCtrl = (function() {
     const Item = function(id, name, calories){
         this.id = id
@@ -91,10 +104,11 @@ const UICtrl = (function (){
     }
 });
 
-const App = (function(ItemCtrl, UICtrl){
+const App = (function(ItemCtrl,StorageCtrl, UICtrl){
     const loadEventListeners = function(){
         const UISelectors = UICtrl.getSelectors();
         document.querySelector(UISelectors.addBtn).addEventListener('click', itemAddSubmit);
+        document.addEventListener('DOMContentLoaded', getItemsFromStorage);
     }
     const itemAddSubmit = function(event){
         const input = UICtrl.getItemInput()
@@ -103,6 +117,7 @@ const App = (function(ItemCtrl, UICtrl){
             UICtrl.addListItem(newItem);
             const totalCalories = ItemCtrl.getTotalCalories();
             UICtrl.showTotalCalories(totalCalories);
+            StorageCtrl.storeItem(newItem);
             UICtrl.clearInput();
         }
         event.preventDefault()
@@ -116,6 +131,6 @@ const App = (function(ItemCtrl, UICtrl){
             loadEventListeners();
         }
     }
-});
+})(ItemCtrl, StorageCtrl, UICtrl);
 
 App.init()
